@@ -1,0 +1,51 @@
+clone:
+  depth: full    # SonarCloud scanner needs the full history to assign issues properly
+
+image:
+  name: nobleo/nobleo-env:noetic
+  username: $DOCKER_HUB_USERNAME
+  password: $DOCKER_HUB_PASSWORD
+
+definitions:
+  services:
+    docker:
+      memory: 2048  # Required for sonarcloud step
+  caches:
+    sonar: ~/.sonar/cache
+  steps:
+    - step: &install-build-test-step
+        name: Install and build
+        script:
+          - ROSPACKAGE="$BITBUCKET_REPO_SLUG"
+          # Copy source code in the correct place
+          - export PACKAGEPATH="${NOBLEO_ENV_DIR}/system/src/${ROSPACKAGE}"
+          - mkdir -p "$PACKAGEPATH" && cp -rv . "$PACKAGEPATH"
+          # Perform an install of the dependencies
+          - sudo apt-get update -qq
+          - source /home/noblean/.nobleo/setup.bash
+          - nobleo-get install ros-$ROSPACKAGE sonar-scanner-ci --branch=$BITBUCKET_BRANCH --debug
+          # Configure for coverage measurements
+          - cd $PACKAGEPATH
+          - catkin config --cmake-args -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_BUILD_TYPE=Debug -DCATKIN_ENABLE_TESTING=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          # Build the package
+          - catkin build --this --no-status
+          # Check the launch dependencies
+          - source "${NOBLEO_DIR}/setup.bash"
+          - rosrun roslaunch roslaunch-check launch
+          # Check the urdf descriptions
+          - files=$(find . -type f -name "*.urdf.xacro"); for f in $files; do check_urdf <(rosrun xacro xacro $f); done
+          # Package linter
+          - catkin_lint -W2 --strict --explain
+          # Roslint linter (reproduce with `rosrun roslint` etc)
+          - catkin build --this --no-deps --interleave-output --make-args roslint
+          # Run tests
+          - catkin run_tests
+          # Scan for sonarcloud
+          - sonar-scanner-prepare && sonar-scanner
+          # Fail on tests
+          - sudo mv -v "${NOBLEO_ENV_DIR}/system/build/${ROSPACKAGE}/test_results" /opt/atlassian/pipelines/agent/build/test-results
+          - catkin_test_results --all /opt/atlassian/pipelines/agent/build/test-results
+
+pipelines:
+  default:
+    - step: *install-build-test-step

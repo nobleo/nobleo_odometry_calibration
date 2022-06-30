@@ -1,0 +1,7 @@
+<launch>
+
+    <include file="$(find nobleo_gps_calibration)/launch/hardware.launch" />
+
+    <include file="$(find nobleo_gps_calibration)/launch/main.launch" />
+
+</launch>

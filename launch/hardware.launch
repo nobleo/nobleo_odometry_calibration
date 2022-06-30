@@ -1,0 +1,6 @@
+
+<launch>
+
+    <include file="$(find nobleo_gps_calibration)/launch/actuator_drivers.launch" />
+
+</launch>

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="3">
+
+  <name>nobleo_gps_calibration</name>
+  <description>What does your robot do?</description>
+
+  <version>0.0.0</version>
+  <license>TODO</license>
+
+  <maintainer email="ramon.wijnands@nobleo.nl">Ramon Wijnands</maintainer>
+
+  <author email="ramon.wijnands@nobleo.nl">Ramon Wijnands</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>roslint</build_depend>
+  <depend>std_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>backward_ros</depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>roslaunch</exec_depend>
+
+</package>
