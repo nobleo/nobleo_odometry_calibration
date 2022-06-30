@@ -74,7 +74,7 @@ void Solver::add_constraint(const Transform & gps_diff, const Transform & odom_d
     &parameters_.theta);
 }
 
-void Solver::solve()
+[[nodiscard]] bool Solver::solve()
 {
   parameters_ = {};
 
@@ -86,13 +86,14 @@ void Solver::solve()
   ceres::Solve(options, &problem_, &summary);
 
   if (!summary.IsSolutionUsable()) {
-    throw std::runtime_error("Ceres could not find a usable solution to optimize.");
+    return false;
   }
 
   ROS_INFO_STREAM_NAMED(name, summary.BriefReport());
   ROS_DEBUG_STREAM_NAMED(name, summary.FullReport());
   ROS_INFO_NAMED(
     name, "Final parameters: x=%f y=%f theta=%f", parameters_.x, parameters_.y, parameters_.theta);
+  return true;
 }
 
 std::vector<std::array<double, 3>> Solver::residuals()

@@ -36,8 +36,8 @@ public:
 
   void configure(const CalibratorConfig & config);
   void add(const nav_msgs::OdometryConstPtr & gps);
-  void solve() { solver_.solve(); }
-  Solver::Parameters parameters() { return solver_.parameters(); }
+  [[nodiscard]] bool solve() { return solver_.solve(); }
+  Solver::Parameters parameters() const { return solver_.parameters(); }
   std::vector<std::array<double, 3>> residuals() { return solver_.residuals(); };
 
 private:

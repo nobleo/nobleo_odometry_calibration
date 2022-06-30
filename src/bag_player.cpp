@@ -43,13 +43,11 @@ namespace nobleo_gps_calibration
 {
 BagPlayer::BagPlayer(const std::string & filename)
 {
-  bag.open(filename, rosbag::bagmode::Read);
+  bag_.open(filename, rosbag::bagmode::Read);
   ros::Time::init();
-  rosbag::View v(bag);
+  rosbag::View v(bag_);
   bag_start_ = v.getBeginTime();
   bag_end_ = v.getEndTime();
-  last_message_time_ = ros::Time(0);
-  playback_speed_ = 1.0;
 }
 
 void BagPlayer::set_playback_speed(double scale)
@@ -65,9 +63,9 @@ ros::Time BagPlayer::real_time(const ros::Time & msg_time) const
 void BagPlayer::start_play()
 {
   std::vector<std::string> topics;
-  for (const auto & cb : cbs_) topics.push_back(cb.first);
+  for (const auto & [topic, cb] : cbs_) topics.push_back(topic);
 
-  rosbag::View view(bag, rosbag::TopicQuery(topics), bag_start_, bag_end_);
+  rosbag::View view(bag_, rosbag::TopicQuery(topics), bag_start_, bag_end_);
   play_start_ = ros::Time::now();
 
   for (rosbag::MessageInstance const & m : view) {

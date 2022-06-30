@@ -36,7 +36,7 @@ Transform from_msg(const geometry_msgs::Pose & pose)
   return result;
 }
 
-Transform from_msg(const geometry_msgs::Transform transform)
+Transform from_msg(const geometry_msgs::Transform & transform)
 {
   Transform result;
   result.makeAffine();  // needed due to bug in Eigen < 3.4

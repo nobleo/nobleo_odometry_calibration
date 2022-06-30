@@ -76,17 +76,18 @@ public:
    */
   void start_play();
 
-  // The bag file interface loaded in the constructor.
-  rosbag::Bag bag;
+  const rosbag::Bag & bag() const { return bag_; }
 
 private:
   ros::Time real_time(const ros::Time & msg_time) const;
 
+  // The bag file interface loaded in the constructor.
+  rosbag::Bag bag_;
   std::map<std::string, BagCallback> cbs_;
   ros::Time bag_start_;
   ros::Time bag_end_;
   ros::Time last_message_time_;
-  double playback_speed_;
+  double playback_speed_ = 1;
   ros::Time play_start_;
 };
 

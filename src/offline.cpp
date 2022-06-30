@@ -43,7 +43,7 @@ int main(int argc, char ** argv)
   BagPlayer player{args[1]};
   player.set_playback_speed(private_nh.param("rate", std::numeric_limits<double>::infinity()));
 
-  auto buffer = std::make_shared<BagBuffer>(player.bag);
+  auto buffer = std::make_shared<BagBuffer>(player.bag());
   Calibrator calibrator{buffer};
 
   dynamic_reconfigure::Server<CalibratorConfig> reconfigure_server;
@@ -62,7 +62,8 @@ int main(int argc, char ** argv)
   player.start_play();
 
   auto initial_residuals = calibrator.residuals();
-  calibrator.solve();
+  auto result = calibrator.solve();
+  ROS_ASSERT_MSG(result, "Solver could not find a usable solution to optimize");
   auto residuals = calibrator.residuals();
 
   Gnuplot gp;

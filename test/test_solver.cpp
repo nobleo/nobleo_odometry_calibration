@@ -19,7 +19,7 @@ TEST(Solver, gps_at_small_angle)
   solver.add_constraint(gps_diff, create_transform(2, 0, 0));
   gps_diff = p2.inverse() * (p3);
   solver.add_constraint(gps_diff, create_transform(2, 0, 0));
-  solver.solve();
+  EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().theta, 0.2, eps);
 }
 
@@ -41,13 +41,13 @@ TEST(Solver, gps_offset_in_x)
   gps_diff = p2.inverse() * p3;
   solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, M_PI_2));
 
-  solver.solve();
+  EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().x, 0.2, eps);
   EXPECT_NEAR(solver.parameters().y, 0, eps);
   EXPECT_NEAR(solver.parameters().theta, 0, eps);
 
   solver.configure({Solver::OptimizeParameters::XYTHETA});
-  solver.solve();
+  EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().x, 0.2, eps);
   EXPECT_NEAR(solver.parameters().y, 0, eps);
   EXPECT_NEAR(solver.parameters().theta, 0, eps);
@@ -73,7 +73,7 @@ TEST(Solver, gps_offset_in_y)
   ROS_INFO_STREAM("gps_diff:\n" << gps_diff.matrix());
   solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, -M_PI_2));
 
-  solver.solve();
+  EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().x, 0, eps);
   EXPECT_NEAR(solver.parameters().y, 0.2, eps);
   EXPECT_NEAR(solver.parameters().theta, 0, eps);

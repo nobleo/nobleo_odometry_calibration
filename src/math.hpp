@@ -23,7 +23,7 @@ Point from_msg(const geometry_msgs::Point & point);
 Point from_msg(const geometry_msgs::Vector3 & vector);
 Quaternion from_msg(const geometry_msgs::Quaternion & q);
 Transform from_msg(const geometry_msgs::Pose & pose);
-Transform from_msg(const geometry_msgs::Transform transform);
+Transform from_msg(const geometry_msgs::Transform & transform);
 
 /**
  * @brief get_yaw

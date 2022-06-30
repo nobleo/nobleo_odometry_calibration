@@ -30,8 +30,8 @@ public:
 
   void configure(const Config & config);
   void add_constraint(const Transform & gps_diff, const Transform & odom_diff);
-  void solve();
-  Parameters parameters() { return parameters_; }
+  [[nodiscard]] bool solve();
+  Parameters parameters() const { return parameters_; }
   std::vector<std::array<double, 3>> residuals();
 
 private:
