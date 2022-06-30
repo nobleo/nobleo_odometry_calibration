@@ -3,10 +3,9 @@ project(nobleo_gps_calibration)
 
 find_package(catkin REQUIRED
   COMPONENTS
-    roscpp
     backward_ros
-
-    rospy
+    roscpp
+    roslint
 )
 catkin_package(
   CATKIN_DEPENDS
@@ -14,10 +13,18 @@ catkin_package(
 )
 
 include_directories(
-  include
   ${catkin_INCLUDE_DIRS}
 )
 
+add_executable(main
+  src/main.cpp
+)
+
+install(TARGETS main
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
 
 # Roslint cpp
 set(ROSLINT_CPP_OPTS "--filter=-legal/copyright")

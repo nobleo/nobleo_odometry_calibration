@@ -1,6 +1,0 @@
-<launch>
-
-    <!-- Load robot description in both hardware as main because nodes require the parameter -->
-    <include file="$(find nobleo_gps_calibration_description)/launch/description.launch" />
-
-</launch>
