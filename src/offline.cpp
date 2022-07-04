@@ -24,6 +24,7 @@ constexpr auto name = "offline";
 
 int main(int argc, char ** argv)
 {
+  google::InitGoogleLogging(argv[0]);
   if (ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME, ros::console::levels::Debug)) {
     ros::console::notifyLoggerLevelsChanged();
   }

@@ -5,6 +5,8 @@
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/Vector3.h>
+
+#include <utility>
 namespace nobleo_gps_calibration
 {
 Point from_msg(const geometry_msgs::Point & point)
@@ -104,4 +106,14 @@ Eigen::Isometry2d to_2d(const Transform & pose)
   result.translation().y() = pose.translation().y();
   return result;
 }
+
+std::pair<double, double> inverse_odometry(Eigen::Isometry2d odom_diff)
+{
+  auto linear = odom_diff.translation().norm();
+  Eigen::Rotation2Dd rot;
+  rot.fromRotationMatrix(odom_diff.linear());
+  auto angular = rot.angle();
+  return {linear, angular};
+}
+
 }  // namespace nobleo_gps_calibration

@@ -56,6 +56,7 @@ add_definitions(${EIGEN3_DEFINITIONS})
 
 add_library(${PROJECT_NAME}
   src/calibrator.cpp
+  src/config.cpp
   src/math.cpp
   src/solver.cpp
 )

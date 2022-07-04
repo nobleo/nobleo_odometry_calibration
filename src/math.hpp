@@ -64,4 +64,30 @@ Eigen::Transform<T, 2, Eigen::Isometry> create_transform_2d(T x, T y, T theta)
   transform.linear() = create_rotation_matrix_2d(theta);
   return transform;
 }
+
+/**
+ * @brief Calculate linear and angular displacement based on robot movement
+ */
+std::pair<double, double> inverse_odometry(Eigen::Isometry2d odom_diff);
+
+/**
+ * @brief Calculate robot movement based on linear and angular displacement
+ *
+ * Inspired by:
+ * https://github.com/ros-controls/ros2_controllers/blob/master/diff_drive_controller/src/odometry.cpp
+ */
+template <typename T>
+Eigen::Transform<T, 2, Eigen::Isometry> odometry(T linear, T angular)
+{
+  // create translation that is rotated by angular/2
+  auto rot = create_rotation_matrix_2d(angular / T(2));
+  auto translation = Eigen::Translation<T, 2>{linear, T(0)};
+
+  Eigen::Transform<T, 2, Eigen::Isometry> transform;
+  transform.makeAffine();
+  transform.translation() = rot * translation.vector();
+  transform.linear() = create_rotation_matrix_2d(angular);
+  return transform;
+}
+
 }  // namespace nobleo_gps_calibration

@@ -42,41 +42,67 @@ Solver::Solver()
   problem_.AddParameterBlock(&parameters_.x, 1);
   problem_.AddParameterBlock(&parameters_.y, 1);
   problem_.AddParameterBlock(&parameters_.theta, 1, AngleLocalParameterization::create());
-
-  problem_.SetParameterBlockConstant(&parameters_.x);
-  problem_.SetParameterBlockConstant(&parameters_.y);
+  problem_.AddParameterBlock(&parameters_.wheel_separation_multiplier, 1);
+  problem_.AddParameterBlock(&parameters_.wheel_radius_multiplier, 1);
 }
 
-void Solver::configure(const Solver::Config & config)
+void Solver::configure(const OptimizeParameters & optimize)
 {
-  switch (config.optimize_parameters) {
-    case OptimizeParameters::THETA:
-      problem_.SetParameterBlockConstant(&parameters_.x);
-      problem_.SetParameterBlockConstant(&parameters_.y);
-      break;
-    case OptimizeParameters::XTHETA:
-      problem_.SetParameterBlockVariable(&parameters_.x);
-      problem_.SetParameterBlockConstant(&parameters_.y);
-      break;
-    case OptimizeParameters::XYTHETA:
-      problem_.SetParameterBlockVariable(&parameters_.x);
-      problem_.SetParameterBlockVariable(&parameters_.y);
-      break;
+  ROS_INFO_NAMED(
+    name,
+    "optimize parameters:\nx: %d\ny: %d\ntheta: %d\nwheel_separation_multiplier: "
+    "%d\nwheel_radius_multiplier: %d",
+    optimize.x, optimize.y, optimize.theta, optimize.wheel_separation_multiplier,
+    optimize.wheel_radius_multiplier);
+
+  // shorthand
+  auto set_parameter_block = [this](double * values, bool variable) {
+    if (variable)
+      problem_.SetParameterBlockVariable(values);
+    else
+      problem_.SetParameterBlockConstant(values);
+  };
+
+  set_parameter_block(&parameters_.x, optimize.x);
+  set_parameter_block(&parameters_.y, optimize.y);
+  set_parameter_block(&parameters_.theta, optimize.theta);
+  set_parameter_block(
+    &parameters_.wheel_separation_multiplier, optimize.wheel_separation_multiplier);
+  set_parameter_block(&parameters_.wheel_radius_multiplier, optimize.wheel_radius_multiplier);
+
+  std::vector<ceres::ResidualBlockId> residual_blocks;
+  problem_.GetResidualBlocks(&residual_blocks);
+  if (!residual_blocks.empty()) ROS_WARN_NAMED(name, "Exising constraints will be removed");
+  for (auto id : residual_blocks) {
+    problem_.RemoveResidualBlock(id);
   }
 
-  config_ = config;
+  optimize_parameters_ = optimize;
 }
 
 void Solver::add_constraint(const Transform & gps_diff, const Transform & odom_diff)
 {
-  problem_.AddResidualBlock(
-    CostFunctor::create(gps_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
-    &parameters_.theta);
+  if (
+    optimize_parameters_.wheel_separation_multiplier ||
+    optimize_parameters_.wheel_radius_multiplier) {
+    problem_.AddResidualBlock(
+      CostFunctor::create5dof(gps_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
+      &parameters_.theta, &parameters_.wheel_separation_multiplier,
+      &parameters_.wheel_radius_multiplier);
+  } else {
+    problem_.AddResidualBlock(
+      CostFunctor::create(gps_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
+      &parameters_.theta);
+  }
 }
 
 [[nodiscard]] bool Solver::solve()
 {
   parameters_ = {};
+  ROS_INFO_NAMED(
+    name, "Initial parameters: x=%f y=%f theta=%f separation=%f radius=%f", parameters_.x,
+    parameters_.y, parameters_.theta, parameters_.wheel_separation_multiplier,
+    parameters_.wheel_radius_multiplier);
 
   // Run the solver!
   ceres::Solver::Options options;
@@ -92,7 +118,9 @@ void Solver::add_constraint(const Transform & gps_diff, const Transform & odom_d
   ROS_INFO_STREAM_NAMED(name, summary.BriefReport());
   ROS_DEBUG_STREAM_NAMED(name, summary.FullReport());
   ROS_INFO_NAMED(
-    name, "Final parameters: x=%f y=%f theta=%f", parameters_.x, parameters_.y, parameters_.theta);
+    name, "Final parameters: x=%f y=%f theta=%f separation=%f radius=%f", parameters_.x,
+    parameters_.y, parameters_.theta, parameters_.wheel_separation_multiplier,
+    parameters_.wheel_radius_multiplier);
   return true;
 }
 

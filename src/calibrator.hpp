@@ -1,9 +1,9 @@
 #pragma once
-#include <nobleo_gps_calibration/CalibratorConfig.h>
 #include <tf2/transform_datatypes.h>
 
 #include <optional>
 
+#include "./config.hpp"
 #include "./solver.hpp"
 
 namespace nav_msgs
@@ -17,18 +17,6 @@ class BufferCore;
 }
 namespace nobleo_gps_calibration
 {
-struct Config
-{
-  Config() = default;
-  explicit Config(const CalibratorConfig & config);
-
-  double update_min_d;
-  double update_min_a;
-  std::string odom_frame_id;
-  std::string base_frame_id;
-  std::string global_frame_id;
-};
-
 class Calibrator
 {
 public:

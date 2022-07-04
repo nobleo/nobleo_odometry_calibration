@@ -10,18 +10,13 @@
 constexpr auto name = "calibrator";
 namespace nobleo_gps_calibration
 {
-Config::Config(const CalibratorConfig & config)
-: update_min_d(config.update_min_d),
-  update_min_a(config.update_min_a),
-  odom_frame_id(config.odom_frame_id),
-  base_frame_id(config.base_frame_id),
-  global_frame_id(config.global_frame_id)
-{
-}
-
 Calibrator::Calibrator(const std::shared_ptr<tf2::BufferCore> & buffer) : buffer_(buffer) {}
 
-void Calibrator::configure(const CalibratorConfig & config) { config_ = Config{config}; }
+void Calibrator::configure(const CalibratorConfig & config)
+{
+  config_ = Config{config};
+  solver_.configure(config_.optimize_parameters);
+}
 
 void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
 {

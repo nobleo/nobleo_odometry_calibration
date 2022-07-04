@@ -8,6 +8,8 @@ using nobleo_gps_calibration::create_quaternion;
 using nobleo_gps_calibration::create_transform;
 using nobleo_gps_calibration::from_msg;
 using nobleo_gps_calibration::get_yaw;
+using nobleo_gps_calibration::inverse_odometry;
+using nobleo_gps_calibration::odometry;
 using nobleo_gps_calibration::to_2d;
 
 constexpr auto eps = 1e-15;
@@ -109,6 +111,15 @@ TEST_P(DoubleParameterized, to_2d)
   EXPECT_NEAR(transform_2d(2, 0), 0, eps);
   EXPECT_NEAR(transform_2d(2, 1), 0, eps);
   EXPECT_NEAR(transform_2d(2, 2), 1, eps);
+}
+
+TEST(Math, odometry)
+{
+  auto odom = odometry(2.0, 0.2);
+  auto [linear, angular] = inverse_odometry(odom);
+
+  EXPECT_NEAR(linear, 2, eps);
+  EXPECT_NEAR(angular, 0.2, eps);
 }
 
 INSTANTIATE_TEST_SUITE_P(Math, DoubleParameterized, testing::Values(0.1, -0.1, 3.13, -3.14));
