@@ -35,10 +35,14 @@
 #include "./bag_player.hpp"
 
 #include <ros/init.h>
+#include <ros/names.h>
 #include <rosbag/view.h>
 
 #include <string>
 #include <vector>
+
+constexpr auto name = "bag_player";
+
 namespace nobleo_gps_calibration
 {
 BagPlayer::BagPlayer(const std::string & filename)
@@ -48,6 +52,13 @@ BagPlayer::BagPlayer(const std::string & filename)
   rosbag::View v(bag_);
   bag_start_ = v.getBeginTime();
   bag_end_ = v.getEndTime();
+}
+
+void BagPlayer::register_callback(const std::string & topic, BagCallback cb)
+{
+  auto resolved_name = ros::names::resolve(topic);
+  ROS_DEBUG_NAMED(name, "resolving topic '%s' as '%s'", topic.c_str(), resolved_name.c_str());
+  cbs_[resolved_name] = cb;
 }
 
 void BagPlayer::set_playback_speed(double scale)

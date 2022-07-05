@@ -63,6 +63,7 @@ public:
    */
   template <class T>
   void register_callback(const std::string & topic, BagCallbackT<T> cb);
+  void register_callback(const std::string & topic, BagCallback cb);
 
   /**
    * @brief Set the speed to playback.
@@ -94,10 +95,10 @@ private:
 template <class T>
 void BagPlayer::register_callback(const std::string & topic, BagCallbackT<T> cb)
 {
-  cbs_[topic] = [cb](const rosbag::MessageInstance & m) {
+  register_callback(topic, [cb](const rosbag::MessageInstance & m) {
     const auto msg = m.instantiate<T>();
     assert(msg);
     cb(msg);
-  };
+  });
 }
 }  // namespace nobleo_gps_calibration

@@ -57,8 +57,7 @@ int main(int argc, char ** argv)
   ros::WallDuration{0.1}.sleep();  // wait for topics to connect
 
   player.register_callback<nav_msgs::Odometry>(
-    "/odometry/filtered",
-    [&calibrator](const nav_msgs::OdometryConstPtr & gps) { calibrator.add(gps); });
+    "odom", [&calibrator](const nav_msgs::OdometryConstPtr & gps) { calibrator.add(gps); });
 
   player.start_play();
 

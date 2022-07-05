@@ -2,6 +2,7 @@
 
 #include <ceres/autodiff_local_parameterization.h>
 #include <ceres/solver.h>
+#include <ros/assert.h>
 #include <ros/console.h>
 
 #include <vector>
@@ -98,6 +99,11 @@ void Solver::add_constraint(const Transform & gps_diff, const Transform & odom_d
 
 [[nodiscard]] bool Solver::solve()
 {
+  if (problem_.NumResidualBlocks() <= 0) {
+    ROS_ERROR_NAMED(name, "No constraints added");
+    return false;
+  }
+
   parameters_ = {};
   ROS_INFO_NAMED(
     name, "Initial parameters: x=%f y=%f theta=%f separation=%f radius=%f", parameters_.x,
