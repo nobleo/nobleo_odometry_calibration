@@ -1,6 +1,7 @@
 #include "./solver.hpp"
 
 #include <ceres/autodiff_local_parameterization.h>
+#include <ceres/covariance.h>
 #include <ceres/solver.h>
 #include <ros/assert.h>
 #include <ros/console.h>
@@ -127,6 +128,24 @@ void Solver::add_constraint(const Transform & gps_diff, const Transform & odom_d
     name, "Final parameters: x=%f y=%f theta=%f separation=%f radius=%f", parameters_.x,
     parameters_.y, parameters_.theta, parameters_.wheel_separation_multiplier,
     parameters_.wheel_radius_multiplier);
+
+  ceres::Covariance covariance{{}};
+  auto success = covariance.Compute(
+    {&parameters_.x, &parameters_.y, &parameters_.theta, &parameters_.wheel_separation_multiplier,
+     &parameters_.wheel_radius_multiplier},
+    &problem_);
+  if (!success) {
+    ROS_WARN_NAMED(name, "Covariance computation failed");
+    return false;
+  }
+
+  Eigen::Matrix<double, 5, 5> matrix;
+  covariance.GetCovarianceMatrix(
+    {&parameters_.x, &parameters_.y, &parameters_.theta, &parameters_.wheel_separation_multiplier,
+     &parameters_.wheel_radius_multiplier},
+    matrix.data());
+  ROS_INFO_STREAM("Parameter covariance:\n" << matrix);
+
   return true;
 }
 
