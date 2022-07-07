@@ -3,7 +3,6 @@
 #include <ceres/autodiff_local_parameterization.h>
 #include <ceres/covariance.h>
 #include <ceres/solver.h>
-#include <ros/assert.h>
 #include <ros/console.h>
 
 #include <vector>
