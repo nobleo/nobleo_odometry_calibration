@@ -4,6 +4,19 @@
 #include "./math.hpp"
 namespace nobleo_gps_calibration
 {
+/**
+ * @brief Sanity check that the matrix is still affine
+ *
+ * If the assert fails there is an uninitialized transform somewhere.
+ */
+template <typename T>
+void assert_is_affine(const Eigen::Transform<T, 2, Eigen::Isometry> & matrix)
+{
+  assert(matrix(2, 0) == T(0));
+  assert(matrix(2, 1) == T(0));
+  assert(matrix(2, 2) == T(1));
+}
+
 struct CostFunctor
 {
 public:
@@ -21,13 +34,7 @@ public:
     auto odom_diff_in_gps = gps_pose.inverse() * odom_diff_.cast<T>() * gps_pose;
 
     auto err = gps_diff_.inverse().cast<T>() * odom_diff_in_gps;
-
-    // Sanity check that the matrix is still affine. If the assert fails there is an uninitialized
-    // transform somewhere.
-    static_assert(int(err.Mode) == Eigen::Isometry);
-    assert(err(2, 0) == T(0));
-    assert(err(2, 1) == T(0));
-    assert(err(2, 2) == T(1));
+    assert_is_affine(err);
 
     Eigen::Rotation2D<T> rot;
     rot.fromRotationMatrix(err.linear());
@@ -55,13 +62,7 @@ public:
     auto odom_diff_in_gps = gps_pose.inverse() * new_odom_diff * gps_pose;
 
     auto err = gps_diff_.inverse().cast<T>() * odom_diff_in_gps;
-
-    // Sanity check that the matrix is still affine. If the assert fails there is an uninitialized
-    // transform somewhere.
-    static_assert(int(err.Mode) == Eigen::Isometry);
-    assert(err(2, 0) == T(0));
-    assert(err(2, 1) == T(0));
-    assert(err(2, 2) == T(1));
+    assert_is_affine(err);
 
     Eigen::Rotation2D<T> rot;
     rot.fromRotationMatrix(err.linear());
