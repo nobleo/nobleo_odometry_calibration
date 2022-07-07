@@ -49,30 +49,24 @@ Transform from_msg(const geometry_msgs::Transform & transform)
 
 double get_yaw(const Eigen::Quaterniond & q)
 {
-  double yaw;
-
-  double sqw;
-  double sqx;
-  double sqy;
-  double sqz;
-
-  sqx = q.x() * q.x();
-  sqy = q.y() * q.y();
-  sqz = q.z() * q.z();
-  sqw = q.w() * q.w();
+  // The implementation is copied from tf2
+  // https://github.com/ros/geometry2/blob/noetic-devel/tf2/include/tf2/impl/utils.h
+  auto sqx = q.x() * q.x();
+  auto sqy = q.y() * q.y();
+  auto sqz = q.z() * q.z();
+  auto sqw = q.w() * q.w();
 
   // Cases derived from https://orbitalstation.wordpress.com/tag/quaternion/
-  double sarg = -2 * (q.x() * q.z() - q.w() * q.y()) /
-                (sqx + sqy + sqz + sqw); /* normalization added from urdfom_headers */
+  auto sarg = -2 * (q.x() * q.z() - q.w() * q.y()) /
+              (sqx + sqy + sqz + sqw); /* normalization added from urdfom_headers */
 
   if (sarg <= -0.99999) {
-    yaw = -2 * atan2(q.y(), q.x());
+    return -2 * atan2(q.y(), q.x());
   } else if (sarg >= 0.99999) {
-    yaw = 2 * atan2(q.y(), q.x());
+    return 2 * atan2(q.y(), q.x());
   } else {
-    yaw = atan2(2 * (q.x() * q.y() + q.w() * q.z()), sqw + sqx - sqy - sqz);
+    return atan2(2 * (q.x() * q.y() + q.w() * q.z()), sqw + sqx - sqy - sqz);
   }
-  return yaw;
 }
 
 double get_yaw(const Eigen::Matrix3d & matrix)
