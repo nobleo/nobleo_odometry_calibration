@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <package format="3">
-
   <name>nobleo_gps_calibration</name>
-  <description>What does your robot do?</description>
+  <description>Calibrate GPS extrinsics based on odometry data</description>
 
   <version>0.0.0</version>
   <license>TODO</license>
@@ -12,7 +11,16 @@
   <author email="ramon.wijnands@nobleo.nl">Ramon Wijnands</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>libboost-iostreams-dev</build_depend>
+  <build_depend>libgnuplot-iostream-dev</build_depend>
   <build_depend>roslint</build_depend>
-  <depend>roscpp</depend>
   <depend>backward_ros</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>libceres-dev</depend>
+  <depend>rosbag</depend>
+  <depend>roscpp</depend>
+  <depend>tf2_ros</depend>
+  <exec_depend>libboost-iostreams</exec_depend>
+  <test_depend>tf2_geometry_msgs</test_depend>
 </package>

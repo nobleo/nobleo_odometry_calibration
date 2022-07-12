@@ -35,7 +35,7 @@ definitions:
           # Check the urdf descriptions
           - files=$(find . -type f -name "*.urdf.xacro"); for f in $files; do check_urdf <(rosrun xacro xacro $f); done
           # Package linter
-          - catkin_lint -W2 --strict --explain
+          - catkin_lint -W2 --strict --explain --ignore unknown_package
           # Roslint linter (reproduce with `rosrun roslint` etc)
           - catkin build --this --no-deps --interleave-output --make-args roslint
           # Run tests
