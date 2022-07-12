@@ -1,6 +1,6 @@
-#include "./config.hpp"
-
 #include <nobleo_gps_calibration/CalibratorConfig.h>
+
+#include <nobleo_gps_calibration/config.hpp>
 
 namespace nobleo_gps_calibration
 {

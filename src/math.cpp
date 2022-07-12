@@ -1,11 +1,10 @@
-#include "./math.hpp"
-
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Quaternion.h>
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/Vector3.h>
 
+#include <nobleo_gps_calibration/math.hpp>
 #include <utility>
 namespace nobleo_gps_calibration
 {

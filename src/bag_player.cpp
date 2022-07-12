@@ -32,12 +32,11 @@
 *  POSSIBILITY OF SUCH DAMAGE.
 *********************************************************************/
 
-#include "./bag_player.hpp"
-
 #include <ros/init.h>
 #include <ros/names.h>
 #include <rosbag/view.h>
 
+#include <nobleo_gps_calibration/bag_player.hpp>
 #include <string>
 #include <vector>
 

@@ -1,11 +1,10 @@
-#include "./calibrator.hpp"
-
 #include <nav_msgs/Odometry.h>
 #include <ros/console.h>
 #include <tf2/buffer_core.h>
 #include <tf2/exceptions.h>
 
 #include <memory>
+#include <nobleo_gps_calibration/calibrator.hpp>
 
 constexpr auto name = "calibrator";
 namespace nobleo_gps_calibration

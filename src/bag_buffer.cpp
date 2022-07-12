@@ -1,11 +1,10 @@
-#include "./bag_buffer.hpp"
-
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosbag/query.h>
 #include <rosbag/view.h>
 #include <tf2_msgs/TFMessage.h>
 
+#include <nobleo_gps_calibration/bag_buffer.hpp>
 #include <string>
 #include <vector>
 

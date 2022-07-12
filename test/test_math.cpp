@@ -2,7 +2,7 @@
 #include <tf2/utils.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
-#include "../src/math.hpp"
+#include <nobleo_gps_calibration/math.hpp>
 
 using nobleo_gps_calibration::create_quaternion;
 using nobleo_gps_calibration::create_transform;

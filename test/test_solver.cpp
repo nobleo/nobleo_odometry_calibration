@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "../src/config.hpp"
-#include "../src/solver.hpp"
+#include <nobleo_gps_calibration/config.hpp>
+#include <nobleo_gps_calibration/solver.hpp>
 
 using nobleo_gps_calibration::create_transform;
 using nobleo_gps_calibration::OptimizeParameters;

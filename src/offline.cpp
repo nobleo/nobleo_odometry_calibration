@@ -8,12 +8,11 @@
 
 #include <limits>
 #include <memory>
+#include <nobleo_gps_calibration/bag_buffer.hpp>
+#include <nobleo_gps_calibration/bag_player.hpp>
+#include <nobleo_gps_calibration/calibrator.hpp>
 #include <string>
 #include <vector>
-
-#include "./bag_buffer.hpp"
-#include "./bag_player.hpp"
-#include "./calibrator.hpp"
 
 using nobleo_gps_calibration::BagBuffer;
 using nobleo_gps_calibration::BagPlayer;

@@ -1,13 +1,11 @@
-#include "./solver.hpp"
-
 #include <ceres/autodiff_local_parameterization.h>
 #include <ceres/covariance.h>
 #include <ceres/solver.h>
 #include <ros/console.h>
 
+#include <nobleo_gps_calibration/cost_function.hpp>
+#include <nobleo_gps_calibration/solver.hpp>
 #include <vector>
-
-#include "./cost_function.hpp"
 
 constexpr auto name = "solver";
 

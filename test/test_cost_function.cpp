@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "../src/cost_function.hpp"
+#include <nobleo_gps_calibration/cost_function.hpp>
 
 using nobleo_gps_calibration::CostFunctor;
 using nobleo_gps_calibration::create_transform;
