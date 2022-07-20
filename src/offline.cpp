@@ -6,6 +6,8 @@
 #include <ros/init.h>
 #include <ros/node_handle.h>
 
+#include <boost/algorithm/string/join.hpp>
+#include <boost/program_options.hpp>
 #include <limits>
 #include <memory>
 #include <nobleo_gps_calibration/bag_buffer.hpp>
@@ -18,8 +20,37 @@ using nobleo_gps_calibration::BagBuffer;
 using nobleo_gps_calibration::BagPlayer;
 using nobleo_gps_calibration::Calibrator;
 using nobleo_gps_calibration::CalibratorConfig;
+namespace po = boost::program_options;
 
 constexpr auto name = "offline";
+
+po::variables_map parse_args(const std::vector<std::string> & args)
+{
+  ROS_DEBUG_NAMED(name, "parsing '%s'", boost::algorithm::join(args, " ").c_str());
+
+  po::positional_options_description p;
+  p.add("input", 1);
+
+  po::options_description options("Allowed options");
+  options.add_options()("help", "produce help message")(
+    "start,s", po::value<double>(), "start at SEC seconds into the bag file")(
+    "end,e", po::value<double>(), "stop at SEC seconds into the bag file");
+
+  po::options_description all_options;  // so that we can hide `input` from help
+  all_options.add_options()("input", "input bagfile");
+  all_options.add(options);
+
+  po::variables_map vm;
+  po::store(po::command_line_parser{args}.positional(p).options(all_options).run(), vm);
+  po::notify(vm);
+
+  if (vm.count("help") != 0 || vm.count("input") != 1) {
+    std::cout << "usage: offline [options] BAGFILE\n";
+    std::cout << options << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  return vm;
+}
 
 int main(int argc, char ** argv)
 {
@@ -28,19 +59,32 @@ int main(int argc, char ** argv)
     ros::console::notifyLoggerLevelsChanged();
   }
 
+  // gather all options that should be parsed by boost
+  std::vector<std::string> args;
+  ros::removeROSArgs(argc, argv, args);
+  assert(args.size() >= 1);
+  args.erase(args.begin());
+
+  po::variables_map options;
+  try {
+    options = parse_args(args);
+  } catch (const boost::program_options::error & e) {
+    std::cout << "error: " << e.what() << std::endl;
+    return EXIT_FAILURE;
+  }
+
   ros::init(argc, argv, "offline");
   ros::NodeHandle nh;
   ros::NodeHandle private_nh{"~"};
   ROS_INFO_NAMED(name, "%s started", private_nh.getNamespace().c_str());
 
-  std::vector<std::string> args;
-  ros::removeROSArgs(argc, argv, args);
-  if (args.size() != 2) {
-    puts("usage: offline BAGFILE");
-    exit(EXIT_FAILURE);
+  BagPlayer player{options["input"].as<std::string>()};
+  if (!options["start"].empty()) {
+    player.set_start(ros::Time{options["start"].as<double>()});
   }
-
-  BagPlayer player{args[1]};
+  if (!options["end"].empty()) {
+    player.set_end(ros::Time{options["end"].as<double>()});
+  }
   player.set_playback_speed(private_nh.param("rate", std::numeric_limits<double>::infinity()));
 
   auto buffer = std::make_shared<BagBuffer>(player.bag());
