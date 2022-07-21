@@ -66,6 +66,20 @@ public:
   void register_callback(const std::string & topic, BagCallback cb);
 
   /**
+   * @brief Set the time in the bag to start
+   *
+   * Default is the first message
+   */
+  void set_start(const ros::Time & start);
+
+  /**
+   * @brief Set the time in the bag to stop
+   *
+   * Default is the last message
+   */
+  void set_end(const ros::Time & end);
+
+  /**
    * @brief Set the speed to playback.
    *
    * 1.0 is the default. 2.0 would be twice as fast, 0.5 is half realtime.

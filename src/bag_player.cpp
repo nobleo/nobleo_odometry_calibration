@@ -60,6 +60,10 @@ void BagPlayer::register_callback(const std::string & topic, BagCallback cb)
   cbs_[resolved_name] = cb;
 }
 
+void BagPlayer::set_start(const ros::Time & start) { bag_start_ = start; }
+
+void BagPlayer::set_end(const ros::Time & end) { bag_end_ = end; }
+
 void BagPlayer::set_playback_speed(double scale)
 {
   if (scale > 0.0) playback_speed_ = scale;
