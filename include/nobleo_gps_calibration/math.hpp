@@ -24,6 +24,7 @@ Point from_msg(const geometry_msgs::Vector3 & vector);
 Quaternion from_msg(const geometry_msgs::Quaternion & q);
 Transform from_msg(const geometry_msgs::Pose & pose);
 Transform from_msg(const geometry_msgs::Transform & transform);
+geometry_msgs::Point to_msg(const Point & point);
 
 /**
  * @brief get_yaw
