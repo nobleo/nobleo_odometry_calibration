@@ -63,7 +63,9 @@ void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
   }
 
   auto gps_diff = last_gps_pose_->inverse() * gps_pose;
-  if (gps_diff.translation().norm() < config_.update_min_d) {
+  if (
+    gps_diff.translation().norm() < config_.update_min_d &&
+    std::abs(get_yaw(gps_diff.linear())) < config_.update_min_a) {
     return;
   }
 
