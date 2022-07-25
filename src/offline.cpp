@@ -5,6 +5,7 @@
 #include <ros/console.h>
 #include <ros/init.h>
 #include <ros/node_handle.h>
+#include <tf2_msgs/TFMessage.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/program_options.hpp>
@@ -32,9 +33,13 @@ po::variables_map parse_args(const std::vector<std::string> & args)
   p.add("input", 1);
 
   po::options_description options("Allowed options");
-  options.add_options()("help", "produce help message")(
-    "start,s", po::value<double>(), "start at SEC seconds into the bag file")(
-    "end,e", po::value<double>(), "stop at SEC seconds into the bag file");
+  options.add_options()("help,h", "produce help message")(
+    "start,s", po::value<double>()->value_name("SEC"), "start at SEC seconds into the bag file")(
+    "end,e", po::value<double>()->value_name("SEC"), "stop at SEC seconds into the bag file")(
+    "rate,r",
+    po::value<double>()->value_name("FACTOR")->default_value(
+      std::numeric_limits<double>::infinity()),
+    "multiply the publish rate by FACTOR")("plot", "plot residuals before and after optimization");
 
   po::options_description all_options;  // so that we can hide `input` from help
   all_options.add_options()("input", "input bagfile");
@@ -85,7 +90,7 @@ int main(int argc, char ** argv)
   if (!options["end"].empty()) {
     player.set_end(ros::Time{options["end"].as<double>()});
   }
-  player.set_playback_speed(private_nh.param("rate", std::numeric_limits<double>::infinity()));
+  player.set_playback_speed(options["rate"].as<double>());
 
   auto buffer = std::make_shared<BagBuffer>(player.bag());
   Calibrator calibrator{buffer, private_nh};
@@ -97,10 +102,24 @@ int main(int argc, char ** argv)
       calibrator.configure(config);
     });
 
+  auto gps_pub = nh.advertise<nav_msgs::Odometry>("odometry/filtered", 100);
+  auto tf_pub = nh.advertise<tf2_msgs::TFMessage>("/tf", 100);
+  auto tf_static_pub = nh.advertise<tf2_msgs::TFMessage>("/tf_static", 100, true);
+
   ros::WallDuration{0.1}.sleep();  // wait for topics to connect
 
   player.register_callback<nav_msgs::Odometry>(
-    "odom", [&calibrator](const nav_msgs::OdometryConstPtr & gps) { calibrator.add(gps); });
+    "odometry/filtered", [&gps_pub, &calibrator](const nav_msgs::OdometryConstPtr & gps) {
+      gps_pub.publish(gps);
+      calibrator.add(gps);
+    });
+
+  player.register_callback<tf2_msgs::TFMessage>(
+    "/tf", [&tf_pub](const tf2_msgs::TFMessageConstPtr & tf) { tf_pub.publish(tf); });
+
+  player.register_callback<tf2_msgs::TFMessage>(
+    "/tf_static",
+    [&tf_static_pub](const tf2_msgs::TFMessageConstPtr & tf) { tf_static_pub.publish(tf); });
 
   player.start_play();
 
@@ -109,14 +128,16 @@ int main(int argc, char ** argv)
   ROS_ASSERT_MSG(result, "Solver could not find a usable solution to optimize");
   auto residuals = calibrator.residuals();
 
-  Gnuplot gp;
-  gp << "set multiplot layout 2,1 rowsfirst\n";
-  gp << "set autoscale\n";
-  gp << "set yrange [-0.2:0.2]\n";
-  gp << "plot " << gp.file1d(initial_residuals)
-     << " using 1 title 'dx', '' using 2 title 'dy', '' using 3 title 'dt'\n";
-  gp << "plot " << gp.file1d(residuals)
-     << " using 1 title 'dx', '' using 2 title 'dy', '' using 3 title 'dt'\n";
+  if (options.count("plot") != 0) {
+    Gnuplot gp;
+    gp << "set multiplot layout 2,1 rowsfirst\n";
+    gp << "set autoscale\n";
+    gp << "set yrange [-0.2:0.2]\n";
+    gp << "plot " << gp.file1d(initial_residuals)
+       << " using 1 title 'dx', '' using 2 title 'dy', '' using 3 title 'dt'\n";
+    gp << "plot " << gp.file1d(residuals)
+       << " using 1 title 'dx', '' using 2 title 'dy', '' using 3 title 'dt'\n";
+  }
 
   ROS_INFO_NAMED(name, "%s finished", private_nh.getNamespace().c_str());
   return EXIT_SUCCESS;
