@@ -93,7 +93,7 @@ int main(int argc, char ** argv)
   player.set_playback_speed(options["rate"].as<double>());
 
   auto buffer = std::make_shared<BagBuffer>(player.bag());
-  Calibrator calibrator{buffer, private_nh};
+  Calibrator calibrator{private_nh, buffer};
 
   dynamic_reconfigure::Server<CalibratorConfig> reconfigure_server;
   reconfigure_server.setCallback(

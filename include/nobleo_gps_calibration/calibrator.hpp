@@ -22,7 +22,7 @@ namespace nobleo_gps_calibration
 class Calibrator
 {
 public:
-  Calibrator(const std::shared_ptr<tf2::BufferCore> & buffer, ros::NodeHandle & nh);
+  Calibrator(ros::NodeHandle & nh, const std::shared_ptr<tf2::BufferCore> & buffer);
 
   void configure(const CalibratorConfig & config);
   void add(const nav_msgs::OdometryConstPtr & gps);

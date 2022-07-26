@@ -11,7 +11,7 @@ namespace
 {
 constexpr auto name = "calibrator";
 
-std_msgs::ColorRGBA create_rgba(double r, double g, double b, double a = 1)
+std_msgs::ColorRGBA create_rgba(float r, float g, float b, float a = 1)
 {
   std_msgs::ColorRGBA result;
   result.r = r;
@@ -24,8 +24,8 @@ std_msgs::ColorRGBA create_rgba(double r, double g, double b, double a = 1)
 
 namespace nobleo_gps_calibration
 {
-Calibrator::Calibrator(const std::shared_ptr<tf2::BufferCore> & buffer, ros::NodeHandle & nh)
-: buffer_(buffer)
+Calibrator::Calibrator(ros::NodeHandle & nh, const std::shared_ptr<tf2::BufferCore> & buffer)
+: buffer_(buffer), marker_pub_(nh.advertise<visualization_msgs::Marker>("visualization", 1))
 {
   marker_.type = visualization_msgs::Marker::LINE_LIST;
   marker_.action = visualization_msgs::Marker::MODIFY;
@@ -33,7 +33,6 @@ Calibrator::Calibrator(const std::shared_ptr<tf2::BufferCore> & buffer, ros::Nod
   marker_.color.g = 1;
   marker_.color.a = 1;
   marker_.scale.x = 0.05;
-  marker_pub_ = nh.advertise<visualization_msgs::Marker>("visualization", 1);
 }
 
 void Calibrator::configure(const CalibratorConfig & config)
