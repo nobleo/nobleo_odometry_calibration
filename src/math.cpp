@@ -46,6 +46,15 @@ Transform from_msg(const geometry_msgs::Transform & transform)
   return result;
 }
 
+geometry_msgs::Point to_msg(const Point & point)
+{
+  geometry_msgs::Point result;
+  result.x = point.x();
+  result.y = point.y();
+  result.z = point.z();
+  return result;
+}
+
 double get_yaw(const Eigen::Quaterniond & q)
 {
   // The implementation is copied from tf2

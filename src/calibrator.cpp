@@ -1,20 +1,46 @@
 #include <nav_msgs/Odometry.h>
 #include <ros/console.h>
+#include <ros/node_handle.h>
 #include <tf2/buffer_core.h>
 #include <tf2/exceptions.h>
 
 #include <memory>
 #include <nobleo_gps_calibration/calibrator.hpp>
 
+namespace
+{
 constexpr auto name = "calibrator";
+
+std_msgs::ColorRGBA create_rgba(float r, float g, float b, float a = 1)
+{
+  std_msgs::ColorRGBA result;
+  result.r = r;
+  result.g = g;
+  result.b = b;
+  result.a = a;
+  return result;
+}
+}  // namespace
+
 namespace nobleo_gps_calibration
 {
-Calibrator::Calibrator(const std::shared_ptr<tf2::BufferCore> & buffer) : buffer_(buffer) {}
+Calibrator::Calibrator(ros::NodeHandle & nh, const std::shared_ptr<tf2::BufferCore> & buffer)
+: buffer_(buffer), marker_pub_(nh.advertise<visualization_msgs::Marker>("visualization", 1))
+{
+  marker_.type = visualization_msgs::Marker::LINE_LIST;
+  marker_.action = visualization_msgs::Marker::MODIFY;
+  marker_.pose.orientation.w = 1;
+  marker_.color.g = 1;
+  marker_.color.a = 1;
+  marker_.scale.x = 0.05;
+}
 
 void Calibrator::configure(const CalibratorConfig & config)
 {
   config_ = Config{config};
   solver_.configure(config_.optimize_parameters);
+
+  marker_.header.frame_id = config_.global_frame_id;
 }
 
 void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
@@ -36,7 +62,9 @@ void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
   }
 
   auto gps_diff = last_gps_pose_->inverse() * gps_pose;
-  if (gps_diff.translation().norm() < config_.update_min_d) {
+  if (
+    gps_diff.translation().norm() < config_.update_min_d &&
+    std::abs(get_yaw(gps_diff.linear())) < config_.update_min_a) {
     return;
   }
 
@@ -56,6 +84,16 @@ void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
   ROS_DEBUG_NAMED(
     name, "odom_diff: x=%f y=%f t=%f", odom_diff.translation().x(), odom_diff.translation().y(),
     get_yaw(odom_diff.linear()));
+  marker_.header.stamp = gps->header.stamp;
+  marker_.colors.push_back(create_rgba(0, 1, 0));
+  marker_.points.push_back(to_msg(last_gps_pose_->translation()));
+  marker_.colors.push_back(create_rgba(0, 1, 1));
+  marker_.points.push_back(to_msg(gps_pose.translation()));
+  marker_.colors.push_back(create_rgba(1, 0, 0));
+  marker_.points.push_back(to_msg(gps_pose.translation()));
+  marker_.colors.push_back(create_rgba(1, 0, 0));
+  marker_.points.push_back(to_msg(*last_gps_pose_ * odom_diff.translation()));
+  marker_pub_.publish(marker_);
 
   solver_.add_constraint(gps_diff, odom_diff);
 

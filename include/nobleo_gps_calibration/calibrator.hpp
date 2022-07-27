@@ -1,5 +1,7 @@
 #pragma once
+#include <ros/publisher.h>
 #include <tf2/transform_datatypes.h>
+#include <visualization_msgs/Marker.h>
 
 #include <optional>
 
@@ -20,7 +22,7 @@ namespace nobleo_gps_calibration
 class Calibrator
 {
 public:
-  explicit Calibrator(const std::shared_ptr<tf2::BufferCore> & buffer);
+  Calibrator(ros::NodeHandle & nh, const std::shared_ptr<tf2::BufferCore> & buffer);
 
   void configure(const CalibratorConfig & config);
   void add(const nav_msgs::OdometryConstPtr & gps);
@@ -35,5 +37,8 @@ private:
   std::optional<tf2::Stamped<Transform>> last_gps_pose_;
   Solver solver_;
   Config config_;
+
+  visualization_msgs::Marker marker_;
+  ros::Publisher marker_pub_;
 };
 }  // namespace nobleo_gps_calibration
