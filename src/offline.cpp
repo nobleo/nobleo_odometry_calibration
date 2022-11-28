@@ -124,8 +124,12 @@ int main(int argc, char ** argv)
   player.start_play();
 
   auto initial_residuals = calibrator.residuals();
-  auto result = calibrator.solve();
-  ROS_ASSERT_MSG(result, "Solver could not find a usable solution to optimize");
+  if (calibrator.solve()) {
+    ROS_INFO("Solver found a usable solution");
+  } else {
+    ROS_FATAL("Solver could not find a usable solution to optimize");
+    return EXIT_FAILURE;
+  }
   auto residuals = calibrator.residuals();
 
   if (options.count("plot") != 0) {

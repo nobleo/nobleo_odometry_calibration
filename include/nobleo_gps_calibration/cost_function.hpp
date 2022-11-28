@@ -10,7 +10,7 @@ namespace nobleo_gps_calibration
  * If the assert fails there is an uninitialized transform somewhere.
  */
 template <typename T>
-void assert_is_affine(const Eigen::Transform<T, 2, Eigen::Isometry> & matrix)
+void assert_is_affine([[maybe_unused]] const Eigen::Transform<T, 2, Eigen::Isometry> & matrix)
 {
   assert(matrix(2, 0) == T(0));
   assert(matrix(2, 1) == T(0));
