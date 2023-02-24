@@ -11,7 +11,6 @@ definitions:
     docker:
       memory: 2048  # Required for sonarcloud step
   caches:
-    sonar: ~/.sonar/cache
   steps:
     - step: &install-build-test-step
         name: Install and build
