@@ -1,3 +1,7 @@
+# Copyright 2022 Nobleo Technology B.V.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 cmake_minimum_required(VERSION 3.0.2)
 project(nobleo_gps_calibration)
 
@@ -98,7 +102,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 #############
 
 # Roslint cpp
-set(ROSLINT_CPP_OPTS "--filter=-legal/copyright,-whitespace/braces")
+set(ROSLINT_CPP_OPTS "--filter=-whitespace/braces")
 roslint_cpp()
 
 if(CATKIN_ENABLE_TESTING)

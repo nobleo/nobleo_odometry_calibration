@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <gtest/gtest.h>
 #include <tf2/utils.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>

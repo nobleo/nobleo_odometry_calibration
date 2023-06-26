@@ -1,3 +1,7 @@
+# Copyright 2022 Nobleo Technology B.V.
+#
+# SPDX-License-Identifier: Apache-2.0
+
 clone:
   depth: full    # SonarCloud scanner needs the full history to assign issues properly
 

@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <ros/console.h>
 #include <rosbag/bag.h>
 #include <rosbag/query.h>

@@ -1,3 +1,9 @@
+<!--
+Copyright 2022 Nobleo Technology B.V.
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 # Nobleo GPS Calibration
 
 This package can be used to calibrate various robot parameters based on sensor data.

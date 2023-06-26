@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <nobleo_gps_calibration/CalibratorConfig.h>
 
 #include <nobleo_gps_calibration/config.hpp>

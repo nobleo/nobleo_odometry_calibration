@@ -1,10 +1,17 @@
 <?xml version="1.0"?>
+
+<!--
+Copyright 2022 Nobleo Technology B.V.
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
 <package format="3">
   <name>nobleo_gps_calibration</name>
   <description>Calibrate GPS extrinsics based on odometry data</description>
 
   <version>0.0.0</version>
-  <license>TODO</license>
+  <license>Apache-2.0</license>
 
   <maintainer email="ramon.wijnands@nobleo.nl">Ramon Wijnands</maintainer>
 
