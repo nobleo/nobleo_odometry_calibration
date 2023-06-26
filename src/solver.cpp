@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <ceres/autodiff_local_parameterization.h>
 #include <ceres/covariance.h>
 #include <ceres/solver.h>

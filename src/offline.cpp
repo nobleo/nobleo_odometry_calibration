@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <dynamic_reconfigure/server.h>
 #include <gnuplot-iostream.h>
 #include <nav_msgs/Odometry.h>

@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <geometry_msgs/Point.h>
 #include <geometry_msgs/Pose.h>
 #include <geometry_msgs/Quaternion.h>

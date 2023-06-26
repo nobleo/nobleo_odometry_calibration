@@ -1,3 +1,7 @@
+// Copyright 2022 Nobleo Technology B.V.
+//
+// SPDX-License-Identifier: Apache-2.0
+
 #include <nav_msgs/Odometry.h>
 #include <ros/console.h>
 #include <ros/node_handle.h>
