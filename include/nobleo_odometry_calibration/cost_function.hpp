@@ -6,7 +6,7 @@
 #include <ceres/autodiff_cost_function.h>
 
 #include "./math.hpp"
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 /**
  * @brief Sanity check that the matrix is still affine
@@ -93,4 +93,4 @@ private:
   Eigen::Isometry2d odom_diff_;
 };
 
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

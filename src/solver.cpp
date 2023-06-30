@@ -7,13 +7,13 @@
 #include <ceres/solver.h>
 #include <ros/console.h>
 
-#include <nobleo_gps_calibration/cost_function.hpp>
-#include <nobleo_gps_calibration/solver.hpp>
+#include <nobleo_odometry_calibration/cost_function.hpp>
+#include <nobleo_odometry_calibration/solver.hpp>
 #include <vector>
 
 constexpr auto name = "solver";
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 // Normalizes the angle in radians between [-pi and pi).
 template <typename T>
@@ -161,4 +161,4 @@ std::vector<std::array<double, 3>> Solver::residuals()
   }
   return result;
 }
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

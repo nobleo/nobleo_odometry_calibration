@@ -9,7 +9,7 @@
 #include <tf2/exceptions.h>
 
 #include <memory>
-#include <nobleo_gps_calibration/calibrator.hpp>
+#include <nobleo_odometry_calibration/calibrator.hpp>
 
 namespace
 {
@@ -26,7 +26,7 @@ std_msgs::ColorRGBA create_rgba(float r, float g, float b, float a = 1)
 }
 }  // namespace
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 Calibrator::Calibrator(ros::NodeHandle & nh, const std::shared_ptr<tf2::BufferCore> & buffer)
 : buffer_(buffer), marker_pub_(nh.advertise<visualization_msgs::Marker>("visualization", 1))
@@ -110,4 +110,4 @@ Transform Calibrator::get_odom_pose(const ros::Time & time) const
   auto tf = buffer_->lookupTransform(config_.odom_frame_id, config_.base_frame_id, time);
   return from_msg(tf.transform);
 }
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

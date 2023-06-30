@@ -21,7 +21,7 @@ namespace tf2
 {
 class BufferCore;
 }
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 class Calibrator
 {
@@ -45,4 +45,4 @@ private:
   visualization_msgs::Marker marker_;
   ros::Publisher marker_pub_;
 };
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

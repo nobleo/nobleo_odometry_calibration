@@ -2,11 +2,11 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-#include <nobleo_gps_calibration/CalibratorConfig.h>
+#include <nobleo_odometry_calibration/CalibratorConfig.h>
 
-#include <nobleo_gps_calibration/config.hpp>
+#include <nobleo_odometry_calibration/config.hpp>
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 Config::Config(const CalibratorConfig & config)
 : update_min_d(config.update_min_d),
@@ -21,4 +21,4 @@ Config::Config(const CalibratorConfig & config)
   optimize_parameters.wheel_separation_multiplier = config.wheel_separation_multiplier;
   optimize_parameters.wheel_radius_multiplier = config.wheel_radius_multiplier;
 }
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 -->
 
 <package format="3">
-  <name>nobleo_gps_calibration</name>
+  <name>nobleo_odometry_calibration</name>
   <description>Calibrate GPS extrinsics based on odometry data</description>
 
   <version>0.0.0</version>

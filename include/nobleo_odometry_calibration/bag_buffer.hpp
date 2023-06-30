@@ -11,7 +11,7 @@ namespace rosbag
 class Bag;
 }
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 /**
  * @brief Load all tf messages from a rosbag into a tf2::BufferCore
@@ -22,4 +22,4 @@ public:
   explicit BagBuffer(const rosbag::Bag & bag);
 };
 
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

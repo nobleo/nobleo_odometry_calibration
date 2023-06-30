@@ -5,7 +5,7 @@
 #include <dynamic_reconfigure/server.h>
 #include <gnuplot-iostream.h>
 #include <nav_msgs/Odometry.h>
-#include <nobleo_gps_calibration/CalibratorConfig.h>
+#include <nobleo_odometry_calibration/CalibratorConfig.h>
 #include <ros/console.h>
 #include <ros/init.h>
 #include <ros/node_handle.h>
@@ -15,16 +15,16 @@
 #include <boost/program_options.hpp>
 #include <limits>
 #include <memory>
-#include <nobleo_gps_calibration/bag_buffer.hpp>
-#include <nobleo_gps_calibration/bag_player.hpp>
-#include <nobleo_gps_calibration/calibrator.hpp>
+#include <nobleo_odometry_calibration/bag_buffer.hpp>
+#include <nobleo_odometry_calibration/bag_player.hpp>
+#include <nobleo_odometry_calibration/calibrator.hpp>
 #include <string>
 #include <vector>
 
-using nobleo_gps_calibration::BagBuffer;
-using nobleo_gps_calibration::BagPlayer;
-using nobleo_gps_calibration::Calibrator;
-using nobleo_gps_calibration::CalibratorConfig;
+using nobleo_odometry_calibration::BagBuffer;
+using nobleo_odometry_calibration::BagPlayer;
+using nobleo_odometry_calibration::Calibrator;
+using nobleo_odometry_calibration::CalibratorConfig;
 namespace po = boost::program_options;
 
 constexpr auto name = "offline";

@@ -8,12 +8,12 @@
 #include <rosbag/view.h>
 #include <tf2_msgs/TFMessage.h>
 
-#include <nobleo_gps_calibration/bag_buffer.hpp>
+#include <nobleo_odometry_calibration/bag_buffer.hpp>
 #include <string>
 #include <vector>
 
 constexpr auto name = "bag_buffer";
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 ros::Duration duration_from_bag(const rosbag::Bag & bag)
 {
@@ -43,4 +43,4 @@ BagBuffer::BagBuffer(const rosbag::Bag & bag) : BufferCore(duration_from_bag(bag
     }
   }
 }
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

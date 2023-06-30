@@ -8,9 +8,9 @@
 #include <geometry_msgs/Transform.h>
 #include <geometry_msgs/Vector3.h>
 
-#include <nobleo_gps_calibration/math.hpp>
+#include <nobleo_odometry_calibration/math.hpp>
 #include <utility>
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 Point from_msg(const geometry_msgs::Point & point)
 {
@@ -122,4 +122,4 @@ std::pair<double, double> inverse_odometry(Eigen::Isometry2d odom_diff)
   return {linear, angular};
 }
 
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

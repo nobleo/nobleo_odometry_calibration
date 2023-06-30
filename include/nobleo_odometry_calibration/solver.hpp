@@ -7,7 +7,7 @@
 
 #include "./config.hpp"
 #include "./math.hpp"
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 class Solver
 {
@@ -65,4 +65,4 @@ private:
   ceres::Problem problem_;
   Parameters parameters_;
 };
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

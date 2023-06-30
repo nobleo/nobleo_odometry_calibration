@@ -8,7 +8,7 @@
 
 #include <functional>
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 template <class T>
 using BagCallbackT = std::function<void(const boost::shared_ptr<const T> &)>;
@@ -85,4 +85,4 @@ void BagPlayer::register_callback(const std::string & topic, BagCallbackT<T> cb)
     cb(msg);
   });
 }
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

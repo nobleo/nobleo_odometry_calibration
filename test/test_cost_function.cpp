@@ -4,10 +4,10 @@
 
 #include <gtest/gtest.h>
 
-#include <nobleo_gps_calibration/cost_function.hpp>
+#include <nobleo_odometry_calibration/cost_function.hpp>
 
-using nobleo_gps_calibration::CostFunctor;
-using nobleo_gps_calibration::create_transform;
+using nobleo_odometry_calibration::CostFunctor;
+using nobleo_odometry_calibration::create_transform;
 
 constexpr auto eps = 1e-15;
 

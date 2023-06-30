@@ -6,15 +6,15 @@
 #include <tf2/utils.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
-#include <nobleo_gps_calibration/math.hpp>
+#include <nobleo_odometry_calibration/math.hpp>
 
-using nobleo_gps_calibration::create_quaternion;
-using nobleo_gps_calibration::create_transform;
-using nobleo_gps_calibration::from_msg;
-using nobleo_gps_calibration::get_yaw;
-using nobleo_gps_calibration::inverse_odometry;
-using nobleo_gps_calibration::odometry;
-using nobleo_gps_calibration::to_2d;
+using nobleo_odometry_calibration::create_quaternion;
+using nobleo_odometry_calibration::create_transform;
+using nobleo_odometry_calibration::from_msg;
+using nobleo_odometry_calibration::get_yaw;
+using nobleo_odometry_calibration::inverse_odometry;
+using nobleo_odometry_calibration::odometry;
+using nobleo_odometry_calibration::to_2d;
 
 constexpr auto eps = 1e-15;
 

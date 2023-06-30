@@ -4,12 +4,12 @@
 
 #include <gtest/gtest.h>
 
-#include <nobleo_gps_calibration/config.hpp>
-#include <nobleo_gps_calibration/solver.hpp>
+#include <nobleo_odometry_calibration/config.hpp>
+#include <nobleo_odometry_calibration/solver.hpp>
 
-using nobleo_gps_calibration::create_transform;
-using nobleo_gps_calibration::OptimizeParameters;
-using nobleo_gps_calibration::Solver;
+using nobleo_odometry_calibration::create_transform;
+using nobleo_odometry_calibration::OptimizeParameters;
+using nobleo_odometry_calibration::Solver;
 
 constexpr auto eps = 1e-8;
 

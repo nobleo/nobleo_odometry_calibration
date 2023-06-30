@@ -6,7 +6,7 @@
 
 #include <string>
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 class CalibratorConfig;
 
@@ -33,4 +33,4 @@ struct Config
   std::string global_frame_id;
   OptimizeParameters optimize_parameters;
 };
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration
