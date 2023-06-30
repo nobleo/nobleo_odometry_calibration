@@ -106,16 +106,16 @@ int main(int argc, char ** argv)
       calibrator.configure(config);
     });
 
-  auto gps_pub = nh.advertise<nav_msgs::Odometry>("odometry/filtered", 100);
+  auto sensor_pub = nh.advertise<nav_msgs::Odometry>("odometry/filtered", 100);
   auto tf_pub = nh.advertise<tf2_msgs::TFMessage>("/tf", 100);
   auto tf_static_pub = nh.advertise<tf2_msgs::TFMessage>("/tf_static", 100, true);
 
   ros::WallDuration{0.1}.sleep();  // wait for topics to connect
 
   player.register_callback<nav_msgs::Odometry>(
-    "odometry/filtered", [&gps_pub, &calibrator](const nav_msgs::OdometryConstPtr & gps) {
-      gps_pub.publish(gps);
-      calibrator.add(gps);
+    "odometry/filtered", [&sensor_pub, &calibrator](const nav_msgs::OdometryConstPtr & sensor) {
+      sensor_pub.publish(sensor);
+      calibrator.add(sensor);
     });
 
   player.register_callback<tf2_msgs::TFMessage>(

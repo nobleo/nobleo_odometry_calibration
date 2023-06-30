@@ -29,7 +29,7 @@ public:
   Calibrator(ros::NodeHandle & nh, const std::shared_ptr<tf2::BufferCore> & buffer);
 
   void configure(const CalibratorConfig & config);
-  void add(const nav_msgs::OdometryConstPtr & gps);
+  void add(const nav_msgs::OdometryConstPtr & sensor);
   [[nodiscard]] bool solve() { return solver_.solve(); }
   Solver::Parameters parameters() const { return solver_.parameters(); }
   std::vector<std::array<double, 3>> residuals() { return solver_.residuals(); };
@@ -38,7 +38,7 @@ private:
   Transform get_odom_pose(const ros::Time & time) const;
 
   const std::shared_ptr<const tf2::BufferCore> buffer_;
-  std::optional<tf2::Stamped<Transform>> last_gps_pose_;
+  std::optional<tf2::Stamped<Transform>> last_sensor_pose_;
   Solver solver_;
   Config config_;
 

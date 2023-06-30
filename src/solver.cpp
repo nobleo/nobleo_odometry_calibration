@@ -83,18 +83,18 @@ void Solver::configure(const OptimizeParameters & optimize)
   optimize_parameters_ = optimize;
 }
 
-void Solver::add_constraint(const Transform & gps_diff, const Transform & odom_diff)
+void Solver::add_constraint(const Transform & sensor_diff, const Transform & odom_diff)
 {
   if (
     optimize_parameters_.wheel_separation_multiplier ||
     optimize_parameters_.wheel_radius_multiplier) {
     problem_.AddResidualBlock(
-      CostFunctor::create5dof(gps_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
+      CostFunctor::create5dof(sensor_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
       &parameters_.theta, &parameters_.wheel_separation_multiplier,
       &parameters_.wheel_radius_multiplier);
   } else {
     problem_.AddResidualBlock(
-      CostFunctor::create(gps_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
+      CostFunctor::create(sensor_diff, odom_diff), nullptr, &parameters_.x, &parameters_.y,
       &parameters_.theta);
   }
 }

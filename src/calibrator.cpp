@@ -47,38 +47,39 @@ void Calibrator::configure(const CalibratorConfig & config)
   marker_.header.frame_id = config_.global_frame_id;
 }
 
-void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
+void Calibrator::add(const nav_msgs::OdometryConstPtr & sensor)
 {
   Transform odom_pose;
-  auto gps_pose = from_msg(gps->pose.pose);
+  auto sensor_pose = from_msg(sensor->pose.pose);
 
   try {
-    odom_pose = get_odom_pose(gps->header.stamp);
+    odom_pose = get_odom_pose(sensor->header.stamp);
   } catch (const tf2::ExtrapolationException & e) {
     ROS_WARN_NAMED(name, "failed to compute odom pose, skipping measurement (%s)", e.what());
     return;
   }
 
-  if (!last_gps_pose_) {
-    ROS_INFO_NAMED(name, "first gps update, recording starting pose");
-    last_gps_pose_ = tf2::Stamped<Transform>{gps_pose, gps->header.stamp, gps->header.frame_id};
+  if (!last_sensor_pose_) {
+    ROS_INFO_NAMED(name, "first sensor update, recording starting pose");
+    last_sensor_pose_ =
+      tf2::Stamped<Transform>{sensor_pose, sensor->header.stamp, sensor->header.frame_id};
     return;
   }
 
-  auto gps_diff = last_gps_pose_->inverse() * gps_pose;
+  auto sensor_diff = last_sensor_pose_->inverse() * sensor_pose;
   if (
-    gps_diff.translation().norm() < config_.update_min_d &&
-    std::abs(get_yaw(gps_diff.linear())) < config_.update_min_a) {
+    sensor_diff.translation().norm() < config_.update_min_d &&
+    std::abs(get_yaw(sensor_diff.linear())) < config_.update_min_a) {
     return;
   }
 
   ROS_DEBUG_NAMED(
-    name, "gps_diff: x=%f y=%f t=%f", gps_diff.translation().x(), gps_diff.translation().y(),
-    get_yaw(gps_diff.linear()));
+    name, "sensor_diff: x=%f y=%f t=%f", sensor_diff.translation().x(),
+    sensor_diff.translation().y(), get_yaw(sensor_diff.linear()));
 
   Transform last_odom_pose;
   try {
-    last_odom_pose = get_odom_pose(last_gps_pose_->stamp_);
+    last_odom_pose = get_odom_pose(last_sensor_pose_->stamp_);
   } catch (const tf2::ExtrapolationException & e) {
     ROS_WARN_NAMED(name, "failed to compute odom pose, skipping measurement (%s)", e.what());
     return;
@@ -88,20 +89,21 @@ void Calibrator::add(const nav_msgs::OdometryConstPtr & gps)
   ROS_DEBUG_NAMED(
     name, "odom_diff: x=%f y=%f t=%f", odom_diff.translation().x(), odom_diff.translation().y(),
     get_yaw(odom_diff.linear()));
-  marker_.header.stamp = gps->header.stamp;
+  marker_.header.stamp = sensor->header.stamp;
   marker_.colors.push_back(create_rgba(0, 1, 0));
-  marker_.points.push_back(to_msg(last_gps_pose_->translation()));
+  marker_.points.push_back(to_msg(last_sensor_pose_->translation()));
   marker_.colors.push_back(create_rgba(0, 1, 1));
-  marker_.points.push_back(to_msg(gps_pose.translation()));
+  marker_.points.push_back(to_msg(sensor_pose.translation()));
   marker_.colors.push_back(create_rgba(1, 0, 0));
-  marker_.points.push_back(to_msg(gps_pose.translation()));
+  marker_.points.push_back(to_msg(sensor_pose.translation()));
   marker_.colors.push_back(create_rgba(1, 0, 0));
-  marker_.points.push_back(to_msg(*last_gps_pose_ * odom_diff.translation()));
+  marker_.points.push_back(to_msg(*last_sensor_pose_ * odom_diff.translation()));
   marker_pub_.publish(marker_);
 
-  solver_.add_constraint(gps_diff, odom_diff);
+  solver_.add_constraint(sensor_diff, odom_diff);
 
-  last_gps_pose_ = tf2::Stamped<Transform>{gps_pose, gps->header.stamp, gps->header.frame_id};
+  last_sensor_pose_ =
+    tf2::Stamped<Transform>{sensor_pose, sensor->header.stamp, sensor->header.frame_id};
 }
 
 Transform Calibrator::get_odom_pose(const ros::Time & time) const
