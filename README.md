@@ -18,7 +18,7 @@ At the moment only an offline mode is implemented, the package is designed to su
 ## Usage
 
 ```sh
-rosrun nobleo_gps_calibration offline bagfile.bag
+rosrun nobleo_odometry_calibration offline bagfile.bag
 ...
 [ INFO] [...]: Final parameters: x=0.000000 y=0.000000 theta=0.014767 separation=1.000000 radius=1.000000
 ```

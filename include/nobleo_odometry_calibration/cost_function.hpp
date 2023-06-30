@@ -6,7 +6,7 @@
 #include <ceres/autodiff_cost_function.h>
 
 #include "./math.hpp"
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 /**
  * @brief Sanity check that the matrix is still affine
@@ -24,20 +24,21 @@ void assert_is_affine([[maybe_unused]] const Eigen::Transform<T, 2, Eigen::Isome
 struct CostFunctor
 {
 public:
-  CostFunctor(const Transform & gps_diff, const Transform & odom_diff)
-  : gps_diff_(to_2d(gps_diff)), odom_diff_(to_2d(odom_diff))
+  CostFunctor(const Transform & sensor_diff, const Transform & odom_diff)
+  : sensor_diff_(to_2d(sensor_diff)), odom_diff_(to_2d(odom_diff))
   {
   }
 
   template <typename T>
   bool operator()(
-    const T * const gps_x, const T * const gps_y, const T * const gps_theta, T * residual) const
+    const T * const sensor_x, const T * const sensor_y, const T * const sensor_theta,
+    T * residual) const
   {
-    auto gps_pose = create_transform_2d(*gps_x, *gps_y, *gps_theta);
+    auto sensor_pose = create_transform_2d(*sensor_x, *sensor_y, *sensor_theta);
 
-    auto odom_diff_in_gps = gps_pose.inverse() * odom_diff_.cast<T>() * gps_pose;
+    auto odom_diff_in_sensor = sensor_pose.inverse() * odom_diff_.cast<T>() * sensor_pose;
 
-    auto err = gps_diff_.inverse().cast<T>() * odom_diff_in_gps;
+    auto err = sensor_diff_.inverse().cast<T>() * odom_diff_in_sensor;
     assert_is_affine(err);
 
     Eigen::Rotation2D<T> rot;
@@ -50,7 +51,7 @@ public:
 
   template <typename T>
   bool operator()(
-    const T * const gps_x, const T * const gps_y, const T * const gps_theta,
+    const T * const sensor_x, const T * const sensor_y, const T * const sensor_theta,
     const T * const wheel_separation_multiplier, const T * const wheel_radius_multiplier,
     T * residual) const
   {
@@ -61,11 +62,11 @@ public:
 
     auto new_odom_diff = odometry(linear2, angular2);
 
-    auto gps_pose = create_transform_2d(*gps_x, *gps_y, *gps_theta);
+    auto sensor_pose = create_transform_2d(*sensor_x, *sensor_y, *sensor_theta);
 
-    auto odom_diff_in_gps = gps_pose.inverse() * new_odom_diff * gps_pose;
+    auto odom_diff_in_sensor = sensor_pose.inverse() * new_odom_diff * sensor_pose;
 
-    auto err = gps_diff_.inverse().cast<T>() * odom_diff_in_gps;
+    auto err = sensor_diff_.inverse().cast<T>() * odom_diff_in_sensor;
     assert_is_affine(err);
 
     Eigen::Rotation2D<T> rot;
@@ -76,21 +77,22 @@ public:
     return true;
   }
 
-  static ceres::CostFunction * create(const Transform & gps_diff, const Transform & odom_diff)
+  static ceres::CostFunction * create(const Transform & sensor_diff, const Transform & odom_diff)
   {
     return new ceres::AutoDiffCostFunction<CostFunctor, 3, 1, 1, 1>(
-      new CostFunctor(gps_diff, odom_diff));
+      new CostFunctor(sensor_diff, odom_diff));
   }
 
-  static ceres::CostFunction * create5dof(const Transform & gps_diff, const Transform & odom_diff)
+  static ceres::CostFunction * create5dof(
+    const Transform & sensor_diff, const Transform & odom_diff)
   {
     return new ceres::AutoDiffCostFunction<CostFunctor, 3, 1, 1, 1, 1, 1>(
-      new CostFunctor(gps_diff, odom_diff));
+      new CostFunctor(sensor_diff, odom_diff));
   }
 
 private:
-  Eigen::Isometry2d gps_diff_;
+  Eigen::Isometry2d sensor_diff_;
   Eigen::Isometry2d odom_diff_;
 };
 
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

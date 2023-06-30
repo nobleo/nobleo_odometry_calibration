@@ -7,7 +7,7 @@
 
 #include "./config.hpp"
 #include "./math.hpp"
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 class Solver
 {
@@ -33,10 +33,10 @@ public:
 
   /**
    * @brief Add a measurement to include in the optimization process
-   * @param gps_diff A position delta measured by the gps sensor
+   * @param sensor_diff A position delta measured by the sensor
    * @param odom_diff A position delta measured bye the odometry sensor
    */
-  void add_constraint(const Transform & gps_diff, const Transform & odom_diff);
+  void add_constraint(const Transform & sensor_diff, const Transform & odom_diff);
 
   /**
    * @brief Solve the optimization problem
@@ -65,4 +65,4 @@ private:
   ceres::Problem problem_;
   Parameters parameters_;
 };
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

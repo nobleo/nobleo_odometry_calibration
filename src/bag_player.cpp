@@ -6,13 +6,13 @@
 #include <ros/names.h>
 #include <rosbag/view.h>
 
-#include <nobleo_gps_calibration/bag_player.hpp>
+#include <nobleo_odometry_calibration/bag_player.hpp>
 #include <string>
 #include <vector>
 
 constexpr auto name = "bag_player";
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 BagPlayer::BagPlayer(const std::string & filename)
 {
@@ -65,4 +65,4 @@ void BagPlayer::start_play()
     cb(m);
   }
 }
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration

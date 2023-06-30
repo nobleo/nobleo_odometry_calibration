@@ -4,16 +4,16 @@
 
 #include <gtest/gtest.h>
 
-#include <nobleo_gps_calibration/config.hpp>
-#include <nobleo_gps_calibration/solver.hpp>
+#include <nobleo_odometry_calibration/config.hpp>
+#include <nobleo_odometry_calibration/solver.hpp>
 
-using nobleo_gps_calibration::create_transform;
-using nobleo_gps_calibration::OptimizeParameters;
-using nobleo_gps_calibration::Solver;
+using nobleo_odometry_calibration::create_transform;
+using nobleo_odometry_calibration::OptimizeParameters;
+using nobleo_odometry_calibration::Solver;
 
 constexpr auto eps = 1e-8;
 
-TEST(Solver, gps_at_small_angle)
+TEST(Solver, sensor_at_small_angle)
 {
   Solver solver;
   {
@@ -24,10 +24,10 @@ TEST(Solver, gps_at_small_angle)
   auto p1 = create_transform(0, 0, 0, 0, 0, 0.2);
   auto p2 = create_transform(2, 0, 0, 0, 0, 0.2);
   auto p3 = create_transform(4, 0, 0, 0, 0, 0.2);
-  auto gps_diff = p1.inverse() * (p2);
-  solver.add_constraint(gps_diff, create_transform(2, 0, 0));
-  gps_diff = p2.inverse() * (p3);
-  solver.add_constraint(gps_diff, create_transform(2, 0, 0));
+  auto sensor_diff = p1.inverse() * (p2);
+  solver.add_constraint(sensor_diff, create_transform(2, 0, 0));
+  sensor_diff = p2.inverse() * (p3);
+  solver.add_constraint(sensor_diff, create_transform(2, 0, 0));
   EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().theta, 0.2, eps);
 }
@@ -35,9 +35,9 @@ TEST(Solver, gps_at_small_angle)
 /**
  * @brief TEST
  *
- * The GPS receiver is positioned at x=0.2. Test if the Solver can figure this out.
+ * The sensor is positioned at x=0.2. Test if the Solver can figure this out.
  */
-TEST(Solver, gps_offset_in_x)
+TEST(Solver, sensor_offset_in_x)
 {
   Solver solver;
   {
@@ -49,10 +49,10 @@ TEST(Solver, gps_offset_in_x)
   auto p1 = create_transform(0, 0, 0);
   auto p2 = create_transform(2, 0, 0);
   auto p3 = create_transform(1.8, 0.2, 0, 0, 0, M_PI_2);  // turn 90 degrees
-  auto gps_diff = p1.inverse() * p2;
-  solver.add_constraint(gps_diff, create_transform(2, 0, 0));
-  gps_diff = p2.inverse() * p3;
-  solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, M_PI_2));
+  auto sensor_diff = p1.inverse() * p2;
+  solver.add_constraint(sensor_diff, create_transform(2, 0, 0));
+  sensor_diff = p2.inverse() * p3;
+  solver.add_constraint(sensor_diff, create_transform(0, 0, 0, 0, 0, M_PI_2));
 
   EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().x, 0.2, eps);
@@ -63,10 +63,10 @@ TEST(Solver, gps_offset_in_x)
 /**
  * @brief TEST
  *
- * The GPS receiver is positioned at x=0.2. Test if the Solver can figure this out while optimizing
+ * The sensor is positioned at x=0.2. Test if the Solver can figure this out while optimizing
  * x & y.
  */
-TEST(Solver, gps_offset_in_x_2)
+TEST(Solver, sensor_offset_in_x_2)
 {
   Solver solver;
   {
@@ -79,10 +79,10 @@ TEST(Solver, gps_offset_in_x_2)
   auto p1 = create_transform(0, 0, 0);
   auto p2 = create_transform(2, 0, 0);
   auto p3 = create_transform(1.8, 0.2, 0, 0, 0, M_PI_2);  // turn 90 degrees
-  auto gps_diff = p1.inverse() * p2;
-  solver.add_constraint(gps_diff, create_transform(2, 0, 0));
-  gps_diff = p2.inverse() * p3;
-  solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, M_PI_2));
+  auto sensor_diff = p1.inverse() * p2;
+  solver.add_constraint(sensor_diff, create_transform(2, 0, 0));
+  sensor_diff = p2.inverse() * p3;
+  solver.add_constraint(sensor_diff, create_transform(0, 0, 0, 0, 0, M_PI_2));
 
   EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().x, 0.2, eps);
@@ -93,9 +93,9 @@ TEST(Solver, gps_offset_in_x_2)
 /**
  * @brief TEST
  *
- * The GPS receiver is positioned at y=0.2. Test if the Solver can figure this out.
+ * The sensor is positioned at y=0.2. Test if the Solver can figure this out.
  */
-TEST(Solver, gps_offset_in_y)
+TEST(Solver, sensor_offset_in_y)
 {
   Solver solver;
   {
@@ -109,10 +109,10 @@ TEST(Solver, gps_offset_in_y)
   auto p1 = create_transform(0, 0, 0);
   auto p2 = create_transform(2, 0, 0);
   auto p3 = create_transform(2.2, -0.2, 0, 0, 0, -M_PI_2);  // turn 90 degrees
-  auto gps_diff = p1.inverse() * p2;
-  solver.add_constraint(gps_diff, create_transform(2, 0, 0));
-  gps_diff = p2.inverse() * p3;
-  solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, -M_PI_2));
+  auto sensor_diff = p1.inverse() * p2;
+  solver.add_constraint(sensor_diff, create_transform(2, 0, 0));
+  sensor_diff = p2.inverse() * p3;
+  solver.add_constraint(sensor_diff, create_transform(0, 0, 0, 0, 0, -M_PI_2));
 
   EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().x, 0, eps);
@@ -123,7 +123,7 @@ TEST(Solver, gps_offset_in_y)
 /**
  * @brief TEST
  *
- * Gps measures 2m between poses, while odom measures 40% less.
+ * The sensor measures 2m between poses, while odom measures 40% less.
  */
 TEST(Solver, wheel_radius)
 {
@@ -136,10 +136,10 @@ TEST(Solver, wheel_radius)
   auto p1 = create_transform(0, 0, 0);
   auto p2 = create_transform(2, 0, 0);
   auto p3 = create_transform(4, 0, 0);
-  auto gps_diff = p1.inverse() * (p2);
-  solver.add_constraint(gps_diff, create_transform(2 / 1.4, 0, 0));
-  gps_diff = p2.inverse() * (p3);
-  solver.add_constraint(gps_diff, create_transform(2 / 1.4, 0, 0));
+  auto sensor_diff = p1.inverse() * (p2);
+  solver.add_constraint(sensor_diff, create_transform(2 / 1.4, 0, 0));
+  sensor_diff = p2.inverse() * (p3);
+  solver.add_constraint(sensor_diff, create_transform(2 / 1.4, 0, 0));
   EXPECT_TRUE(solver.solve());
   EXPECT_NEAR(solver.parameters().wheel_radius_multiplier, 1.4, eps);
 }
@@ -147,7 +147,7 @@ TEST(Solver, wheel_radius)
 /**
  * @brief TEST
  *
- * Gps measures 90 degrees between poses, while odom measures 40% less.
+ * The sensor measures 90 degrees between poses, while odom measures 40% less.
  */
 TEST(Solver, wheel_separation)
 {
@@ -157,10 +157,10 @@ TEST(Solver, wheel_separation)
     optimize_parameters.wheel_separation_multiplier = true;
     solver.configure(optimize_parameters);
   }
-  auto gps_diff = create_transform(0, 0, 0, 0, 0, M_PI_2);
-  solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, M_PI_2 / 1.4));
-  gps_diff = create_transform(0, 0, 0, 0, 0, M_PI_2);
-  solver.add_constraint(gps_diff, create_transform(0, 0, 0, 0, 0, M_PI_2 / 1.4));
+  auto sensor_diff = create_transform(0, 0, 0, 0, 0, M_PI_2);
+  solver.add_constraint(sensor_diff, create_transform(0, 0, 0, 0, 0, M_PI_2 / 1.4));
+  sensor_diff = create_transform(0, 0, 0, 0, 0, M_PI_2);
+  solver.add_constraint(sensor_diff, create_transform(0, 0, 0, 0, 0, M_PI_2 / 1.4));
   EXPECT_TRUE(solver.solve());
   // The separation is 40% too much, so the multiplier is the inverse
   EXPECT_NEAR(solver.parameters().wheel_separation_multiplier, 1 / 1.4, eps);

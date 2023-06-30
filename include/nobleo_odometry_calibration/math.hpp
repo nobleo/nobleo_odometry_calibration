@@ -17,7 +17,7 @@ ROS_DECLARE_MESSAGE(Pose)
 ROS_DECLARE_MESSAGE(Transform)
 }  // namespace geometry_msgs
 
-namespace nobleo_gps_calibration
+namespace nobleo_odometry_calibration
 {
 using Point = Eigen::Vector3d;
 using Quaternion = Eigen::Quaterniond;
@@ -95,4 +95,4 @@ Eigen::Transform<T, 2, Eigen::Isometry> odometry(T linear, T angular)
   return transform;
 }
 
-}  // namespace nobleo_gps_calibration
+}  // namespace nobleo_odometry_calibration
